@@ -1,0 +1,31 @@
+#!/sbin/sh
+
+. /lib/svc/share/smf_include.sh
+
+ROOT=/opt/oxide/pumpkind
+
+if /usr/bin/pgrep -x -u 0 -z `zonename` pumpkind >/dev/null 2>&1; then
+	echo "$0: pumpkind is already running"
+	exit $SMF_EXIT_ERR_NOSMF
+fi
+
+while getopts l:m: opt
+do
+    case $opt in
+    l)
+	    if [ "$OPTARG" == "true" ]; then
+		    LOG_ONLY="--log-only"
+	    fi
+	    ;;
+    m)
+	    MODE="--mode $OPTARG"
+	    ;;
+    *)
+	echo "invalid option: $opt"
+	exit 1;;
+    esac
+done
+
+${ROOT}/bin/pumpkind run $MODE $LOG_ONLY &
+
+exit $SMF_EXIT_OK

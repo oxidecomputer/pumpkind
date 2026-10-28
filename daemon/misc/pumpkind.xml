@@ -1,0 +1,41 @@
+<?xml version='1.0'?>
+<!DOCTYPE service_bundle SYSTEM '/usr/share/lib/xml/dtd/service_bundle.dtd.1'>
+
+<service_bundle type='manifest' name='oxide-pumpkind'>
+
+    <service name='oxide/pumpkind' type='service' version='1'>
+    <create_default_instance enabled='false'/>
+    <single_instance/>
+
+    <dependency name='net-physical' grouping='require_all' restart_on='none' type='service'>
+      <service_fmri value='svc:/network/physical'/>
+    </dependency>
+
+    <exec_method name='start'
+	    type='method'
+	    exec='/opt/oxide/pumpkind/bin/svc-pumpkind -m %{config/mode} -l %{config/log_only}'
+	    timeout_seconds='0'/>
+
+    <exec_method name='stop'
+	    type='method'
+	    exec=':kill'
+	    timeout_seconds='5'/>
+
+    <property_group name='startd' type='framework'>
+      <propval name='ignore_error' type='astring' value='core,signal'/>
+    </property_group>
+
+    <property_group name='config' type='application'>
+      <propval name='mode' type='astring' value='sled' />
+      <propval name='log_only' type='astring' value='unknown' />
+    </property_group>
+
+    <stability value='Unstable'/>
+
+    <template>
+      <common_name>
+        <loctext xml:lang='C'>Oxide Pumpkin Detection Daemon</loctext>
+      </common_name>
+    </template>
+  </service>
+</service_bundle>

@@ -1,0 +1,10 @@
+[package.dendrite]
+service_name = "pumpkin"
+source.type = "local"
+source.paths = [
+  {from = "target/proto/opt/oxide/bin/pumpkind" , to = "/opt/oxide/pumpkind/bin/pumpkind"},
+  {from = "target/proto/opt/oxide/bin/pumpkinadm" , to = "/opt/oxide/pumpkind/bin/pumpkinadm"},
+  {from = "target/proto/opt/oxide/bin/svc-pumpkind" , to = "/opt/oxide/pumpkind/bin/svc-pumpkind"},
+  {from = "target/proto/opt/oxide/lib/svc/manifest/system/pumpkind.xml" , to = "/var/svc/manifest/site/pumpkind/manifest.xml"},
+]
+output.type = "zone"

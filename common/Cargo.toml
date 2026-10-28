@@ -1,0 +1,9 @@
+[package]
+name = "common"
+version = "0.1.0"
+authors = ["Nils Nieuwejaar <nils@oxide.computer>"]
+edition = "2021"
+
+[dependencies]
+serde.workspace = true
+schemars.workspace = true

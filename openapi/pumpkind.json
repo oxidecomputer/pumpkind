@@ -1,0 +1,492 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Oxide Pumpkind Daemon",
+    "description": "API for managing the pumpkind daemon",
+    "contact": {
+      "url": "https://oxide.computer",
+      "email": "api@oxide.computer"
+    },
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/build-info": {
+      "get": {
+        "summary": "Return detailed build information about the `dpd` server itself.",
+        "operationId": "build_info",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuildInfo"
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/contacts": {
+      "get": {
+        "summary": "Return the direct contact data for all of the sleds this daemon is aware of",
+        "operationId": "get_sleds",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Array_of_SledReport",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SledReport"
+                  }
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/diags": {
+      "post": {
+        "summary": "Trigger a diagnostic dump in the log",
+        "operationId": "trigger_diagnostics",
+        "responses": {
+          "204": {
+            "description": "resource updated"
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/pumpkin": {
+      "get": {
+        "summary": "Get a list of all the (sled, switch) pairs to which we are currently",
+        "description": "behaving like a pumpkin.",
+        "operationId": "pumpkin_list",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Array_of_SledSwitch",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SledSwitch"
+                  }
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/pumpkin/{sled_name}/{switch}/off": {
+      "post": {
+        "summary": "Restart sending beacons to a specific sled on a specific switch",
+        "operationId": "pumpkin_off",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sled_name",
+            "description": "Name of the sled on the T6 side of the link",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "switch",
+            "description": "ID of the switch on the sidecar side of the link",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/SwitchId"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "resource updated"
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/pumpkin/{sled_name}/{switch}/on": {
+      "post": {
+        "summary": "Stop sending beacons to a specific sled on a specific switch",
+        "operationId": "pumpkin_on",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sled_name",
+            "description": "Name of the sled on the T6 side of the link",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "switch",
+            "description": "ID of the switch on the sidecar side of the link",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/SwitchId"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "resource updated"
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/sled/{sled_name}": {
+      "get": {
+        "summary": "Return the contact data reported by a single sled",
+        "operationId": "reports_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sled_name",
+            "description": "Name of the sled whose contact data is being requested",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Array_of_SledReport",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SledReport"
+                  }
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/switches": {
+      "get": {
+        "summary": "When running on a sled, this returns the contact data for the two switches",
+        "description": "it should be connected to.",
+        "operationId": "get_switches",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Array_of_ContactReport",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ContactReport"
+                  }
+                }
+              }
+            }
+          },
+          "4XX": {
+            "$ref": "#/components/responses/Error"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BuildInfo": {
+        "description": "Detailed build information about `pumpkind`.",
+        "type": "object",
+        "properties": {
+          "cargo_triple": {
+            "type": "string"
+          },
+          "debug": {
+            "type": "boolean"
+          },
+          "git_branch": {
+            "type": "string"
+          },
+          "git_commit_timestamp": {
+            "type": "string"
+          },
+          "git_sha": {
+            "type": "string"
+          },
+          "opt_level": {
+            "type": "integer",
+            "format": "uint8",
+            "minimum": 0
+          },
+          "rustc_channel": {
+            "type": "string"
+          },
+          "rustc_commit_sha": {
+            "type": "string"
+          },
+          "rustc_host_triple": {
+            "type": "string"
+          },
+          "rustc_semver": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "cargo_triple",
+          "debug",
+          "git_branch",
+          "git_commit_timestamp",
+          "git_sha",
+          "opt_level",
+          "rustc_channel",
+          "rustc_commit_sha",
+          "rustc_host_triple",
+          "rustc_semver",
+          "version"
+        ]
+      },
+      "ContactReport": {
+        "description": "Contact data for a single sled on a single network over a specific switch.",
+        "type": "object",
+        "properties": {
+          "beacons_missed": {
+            "description": "Number of beacon packets missed by this endpoint, as determined by tracking the packet IDs of received packets.",
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0
+          },
+          "beacons_seen": {
+            "description": "Number of beacon packets received from this endpoint",
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0
+          },
+          "beacons_sent": {
+            "description": "Number of beacon packets sent to this endpoint",
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0
+          },
+          "first_age": {
+            "description": "Number of seconds since a beacon from this endpoint was first receieved",
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0
+          },
+          "last_seen": {
+            "description": "ID of the last beacon packet received from this endpoint",
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0
+          },
+          "last_sent": {
+            "description": "ID of the last beacon packet sent to this endpoint",
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0
+          },
+          "latest_age": {
+            "description": "Number of seconds since a beacon from this endpoint was last receieved",
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "beacons_missed",
+          "beacons_seen",
+          "beacons_sent",
+          "first_age",
+          "last_seen",
+          "last_sent",
+          "latest_age"
+        ]
+      },
+      "Error": {
+        "description": "Error information from a response.",
+        "type": "object",
+        "properties": {
+          "error_code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "request_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message",
+          "request_id"
+        ]
+      },
+      "NetworkReport": {
+        "description": "Contact data for a single sled on a single network over both switches.",
+        "type": "object",
+        "properties": {
+          "addr": {
+            "type": "string",
+            "format": "ipv6"
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactReport"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "required": [
+          "addr",
+          "contacts"
+        ]
+      },
+      "SledReport": {
+        "description": "Contact data for a single sled on both networks over both switches.",
+        "type": "object",
+        "properties": {
+          "bootstrap": {
+            "nullable": true,
+            "description": "The contact data for the bootstrap network, if any",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NetworkReport"
+              }
+            ]
+          },
+          "link_local": {
+            "nullable": true,
+            "description": "The contact data for the switch<->sled connection, if any",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NetworkReport"
+              }
+            ]
+          },
+          "name": {
+            "description": "The name of the sled",
+            "type": "string"
+          },
+          "underlay": {
+            "nullable": true,
+            "description": "The contact data for the underlay network, if any",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NetworkReport"
+              }
+            ]
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "SledSwitch": {
+        "description": "Represents a connection to a sled over a specific switch",
+        "type": "object",
+        "properties": {
+          "sled_name": {
+            "description": "Name of the sled on the T6 side of the link",
+            "type": "string"
+          },
+          "switch": {
+            "description": "ID of the switch on the sidecar side of the link",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SwitchId"
+              }
+            ]
+          }
+        },
+        "required": [
+          "sled_name",
+          "switch"
+        ]
+      },
+      "SwitchId": {
+        "description": "Represents a switch ID.  This is a simple wrapper around usize, with checks added to the construction functions to verify that the inner ID is valid.",
+        "type": "string",
+        "enum": [
+          "Switch0",
+          "Switch1"
+        ]
+      }
+    },
+    "responses": {
+      "Error": {
+        "description": "Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    }
+  }
+}
